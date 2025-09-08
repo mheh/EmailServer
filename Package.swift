@@ -13,7 +13,7 @@ let package = Package(
         .library(
             name: "EmailServerAPI",
             targets: ["EmailServerAPI"]),
-        .library(
+        .executable(
             name: "EmailServer",
             targets: ["EmailServer"],
         ),
@@ -21,15 +21,19 @@ let package = Package(
     dependencies: [
             .package(url: "https://github.com/Cocoanetics/SwiftMail", revision: "1a5f874"),
             .package(url: "https://github.com/modelcontextprotocol/swift-sdk", exact: "0.10.1"),
+            .package(url: "https://github.com/swift-server/swift-service-lifecycle.git", from: "2.3.0"),
+            .package(url: "https://github.com/vapor/console-kit", exact: "4.15.2"),
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
-        .target(
+        .executableTarget(
             name: "EmailServer",
             dependencies: [
                 .target(name: "EmailServerAPI"),
                 .product(name: "MCP", package: "swift-sdk"),
+                .product(name: "ServiceLifecycle", package: "swift-service-lifecycle"),
+                .product(name: "ConsoleKit", package: "console-kit"),
             ],
         ),
         .target(
