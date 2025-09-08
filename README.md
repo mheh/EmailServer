@@ -1,6 +1,6 @@
 # EmailServer
 
-💧 A project built with the Vapor web framework.
+The goals of this project are to abstract SMTP and IMAP (experimental) session management through preshared apikeys so that another server can use 
 
 ## Getting Started
 
