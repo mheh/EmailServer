@@ -15,8 +15,8 @@ let package = Package(
             targets: ["EmailServer"]
         ),
         .library(
-            name: "EmailClients",
-            targets: ["EmailClients"]
+            name: "EmailSessions",
+            targets: ["EmailSessions"]
         ),
     ],
     dependencies: [
@@ -28,13 +28,13 @@ let package = Package(
         .executableTarget(
             name: "EmailServer",
             dependencies: [
-                .target(name: "EmailClients"),
+                .product(name: "SwiftMail", package: "SwiftMail"),
                 .product(name: "SwiftMCP", package: "SwiftMCP"),
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
             ]
         ),
         .target(
-            name: "EmailClients",
+            name: "EmailSessions",
             dependencies: [
                 .product(name: "SwiftMail", package: "SwiftMail"),
             ]

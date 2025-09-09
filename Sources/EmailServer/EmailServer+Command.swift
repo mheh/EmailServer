@@ -32,6 +32,7 @@ final class EmailServerCommand: AsyncParsableCommand {
         let server = EmailServer()
         let transport = HTTPSSETransport(server: server, host: self.host, port: self.port)
         
+        
         transport.serveOpenAPI = true
         print("Running")
         try await transport.run()

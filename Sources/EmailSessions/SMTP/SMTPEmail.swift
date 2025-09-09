@@ -27,6 +27,24 @@ extension SMTPSessions.Connection {
         public var subject: String
         public var textBody: String
         public var htmlBody: String
+        
+        public init(
+            sender: SMTPSessions.Connection.EmailAddress,
+            recipients: [SMTPSessions.Connection.EmailAddress],
+            ccRecipients: [SMTPSessions.Connection.EmailAddress],
+            bccRecipients: [SMTPSessions.Connection.EmailAddress],
+            subject: String,
+            textBody: String,
+            htmlBody: String
+        ) {
+            self.sender = sender
+            self.recipients = recipients
+            self.ccRecipients = ccRecipients
+            self.bccRecipients = bccRecipients
+            self.subject = subject
+            self.textBody = textBody
+            self.htmlBody = htmlBody
+        }
     }
 }
 

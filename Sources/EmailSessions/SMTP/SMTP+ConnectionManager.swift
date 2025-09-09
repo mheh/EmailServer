@@ -13,6 +13,7 @@ import Foundation
 
 /// The owner of all current `SMTP` connections
 public actor SMTPSessions {
+    /// Active sessions
     private var sessions: [UUID: Connection]
     
     public init() {
@@ -49,7 +50,7 @@ extension SMTPSessions {
     }
 }
 
-// MARK: State Management
+// MARK: State Management & Cleanup
 extension SMTPSessions {
     
 }
