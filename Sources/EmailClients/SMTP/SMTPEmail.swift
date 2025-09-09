@@ -5,26 +5,48 @@
 //  Created by Milo Hehmsoth on 9/8/25.
 //
 
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
 import Foundation
+#endif
 
-public struct EmailAddress: Codable {
-    public let name: String?
-    public let email: String
+import SwiftMail
+
+extension SMTPSessions.Connection {
+    public struct EmailAddress: Codable, Sendable {
+        public let name: String?
+        public let address: String
+    }
+    
+    public struct Email: Codable, Sendable {
+        public var sender: SMTPSessions.Connection.EmailAddress
+        public var recipients: [SMTPSessions.Connection.EmailAddress]
+        public var ccRecipients: [SMTPSessions.Connection.EmailAddress]
+        public var bccRecipients: [SMTPSessions.Connection.EmailAddress]
+        public var subject: String
+        public var textBody: String
+        public var htmlBody: String
+    }
 }
 
-public struct Email: Codable {
-    public var sender: EmailAddress
-    public var recepients: [EmailAddress]
-    public var ccRecepients: [EmailAddress]
-    public var bccRecepients: [EmailAddress]
-    public var subject: String
-    public var textBody: String
-    public var htmlBody: String
-    public var attachmnents: [Attachment]
+extension SwiftMail.Email {
+    init(_ email: SMTPSessions.Connection.Email) {
+        self.init(
+            sender: .init(email.sender),
+            recipients: email.recipients.map { .init($0)},
+            ccRecipients: email.ccRecipients.map { .init($0)},
+            bccRecipients: email.bccRecipients.map { .init($0)},
+            subject: email.subject,
+            textBody: email.textBody,
+            htmlBody: email.htmlBody,
+            attachments: nil
+        )
+    }
 }
 
-public struct Attachment: Codable {
-    public var mimeType: String
-    public var data: Data
+extension SwiftMail.EmailAddress {
+    init(_ address: SMTPSessions.Connection.EmailAddress) {
+        self.init(name: address.name, address: address.address)
+    }
 }
-

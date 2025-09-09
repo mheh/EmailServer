@@ -63,8 +63,8 @@ extension SMTPSessions.Connection {
         return try await self.server.fetchCapabilities()
     }
     
-    public func send(_ email: SwiftMail.Email) async throws {
-        try await self.server.sendEmail(email)
+    public func send(_ email: SMTPSessions.Connection.Email) async throws {
+        try await self.server.sendEmail(.init(email))
     }
     
     public func disconnect() async throws {
