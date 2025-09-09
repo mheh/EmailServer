@@ -83,7 +83,7 @@ extension SMTPConnection {
         
         /// Do we need host validation per `RFC 5432, section 2.3.4 and 2.3.5`?
         /// Marked throwing as a precaution.
-        public init(host: String, port: Int, numberOfThreads: Int = 1) throws {
+        public init(host: String, port: Int, numberOfThreads: Int = 1) {
             self.host = host
             self.port = port
             self.numberOfThreads = numberOfThreads
