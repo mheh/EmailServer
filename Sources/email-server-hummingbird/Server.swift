@@ -6,7 +6,7 @@
 //
 
 import EmailServerAPI
-import OpenAPIRuntime
+//import OpenAPIRuntime
 import OpenAPIHummingbird
 import Hummingbird
 import Foundation
@@ -14,7 +14,6 @@ import Logging
 
 struct Handler: APIProtocol {
     private let storage: StreamStorage = .init()
-    typealias SMTPStream = Operations.SmtpStream
     
     func smtpStream(_ input: Operations.SmtpStream.Input) async throws -> Operations.SmtpStream.Output {
         let eventStream = await self.storage.makeStream(input: input)

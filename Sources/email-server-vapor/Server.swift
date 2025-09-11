@@ -8,21 +8,26 @@
 import Vapor
 import OpenAPIVapor
 import EmailServerAPI
-import Logging
 import NIOCore
 import NIOPosix
+import Logging
 
-struct Handler: APIProtocol, @unchecked Sendable {
-    @Injected(\.request) var req: Request
+struct Handler: APIProtocol {
+    private let storage: StreamStorage = .init()
+//    @Injected(\.request) var req: Request
     
-    let smtpStreamController = SMTPStreamController()
     func smtpStream(_ input: EmailServerAPI.Operations.SmtpStream.Input) async throws -> EmailServerAPI.Operations.SmtpStream.Output {
-        try await smtpStreamController.smtpStream(input, req: req)
+        let eventStream = await self.storage.makeStream(input: input)
+        
+        let responseBody = Operations.SmtpStream.Output.Ok.Body.applicationJsonl(
+            .init(eventStream.asEncodedJSONLines(), length: .unknown, iterationBehavior: .single)
+        )
+        
+        return .ok(.init(body: responseBody))
     }
     
-    let imapStreamController = IMAPStreamController()
     func imapStream(_ input: Operations.ImapStream.Input) async throws -> Operations.ImapStream.Output {
-        try await imapStreamController.imapStream(input, req: req)
+        return .internalServerError
     }
 }
 
