@@ -33,7 +33,7 @@ extension SMTPStreamController {
         
         private var logger: Logger
         
-        init(logger: Logger = .init(label: "SMTP Stream")) {
+        init(logger: Logger = .init(label: "SMTP")) {
             self.logger = logger
             self.logger.logLevel = .trace
         }
@@ -54,12 +54,12 @@ extension SMTPStreamController {
         func makeStream(input: Operations.SmtpStream.Input, req: Request) async throws -> StreamOutput {
             let id = req.id
             
-            // setup the smtp server connection
+            // setup the smtp connection
             let host = input.query.smtpHost
             let port = input.query.smtpHostPort
-            let logMeta: Logger.Metadata = [ "id": "\(id)", "host": "\(host)", "port": "\(port)" ]
+            let meta: Logger.Metadata = [ "id":"\(id)", "host":"\(host)", "port":"\(port)" ]
             
-            self.logger.debug("Creating a SMTP Stream", metadata: logMeta)
+            self.logger.info("Creating stream", metadata: meta)
             
             // make an outgoing stream
             let (stream, continuation) = StreamOutput.makeStream()
@@ -82,27 +82,27 @@ extension SMTPStreamController {
             let task = Task<Void, any Error> {
                 // connect to the server successfully
                 let server = SwiftMail.SMTPServer(host: host, port: port, numberOfThreads: 1)
-                self.logger.debug("Connecting...", metadata: logMeta)
+                self.logger.debug("Connecting...", metadata: meta)
                 do { try await server.connect() }
                 catch { continuation.finish() }
-                self.logger.debug("Connected", metadata: logMeta)
+                self.logger.debug("Connected", metadata: meta)
                     
                 // as long as http request is keep-alived, wait for inputs in the stream
                 for try await message in inputMessages {
                     try Task.checkCancellation()
-                    self.logger.debug("Received input", metadata: logMeta)
+                    self.logger.debug("Received input", metadata: meta)
                     try await Self.handleStream(
                         message: message, server: server,
-                        continuation: continuation, logger: (self.logger, logMeta))
+                        continuation: continuation, logger: (self.logger, meta))
                 }
                 
                 // close the stream, no more keep alive
-                self.logger.debug("Disconnecting...", metadata: logMeta)
+                self.logger.debug("Disconnecting...", metadata: meta)
                 do {
                     try await server.disconnect()
-                    self.logger.debug("Disconnected", metadata: logMeta)
+                    self.logger.debug("Disconnected", metadata: meta)
                 }
-                catch { self.logger.report(error: error, metadata: logMeta) }
+                catch { self.logger.report(error: error, metadata: meta) }
                 continuation.finish()
             }
             
