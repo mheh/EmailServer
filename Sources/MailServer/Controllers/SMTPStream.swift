@@ -14,11 +14,14 @@ struct SMTPStreamController {
     private let storage: StreamStorage = .init()
     
     func smtpStream(_ input: SMTPStreamOperation.Input, req: Request) async throws -> SMTPStreamOperation.Output {
+        print("Received stream")
         let eventStream = try await self.storage.makeStream(input: input, req: req)
         
+        print("Made stream")
         let responseBody: SMTPStreamOperation.Output.Ok.Body = .applicationJsonl(
             .init(eventStream.asEncodedJSONLines(), length: .unknown, iterationBehavior: .single)
         )
+        print("Returning a stream")
         return .ok(.init(body: responseBody))
     }
 }

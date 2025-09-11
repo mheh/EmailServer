@@ -19,7 +19,7 @@ let package = Package(
             .package(url: "https://github.com/Cocoanetics/SwiftMail", revision: "1a5f874"),
             .package(url: "https://github.com/vapor/vapor.git", from: "4.115.0"),
             .package(url: "https://github.com/apple/swift-nio.git", from: "2.65.0"),
-            .package(url: "https://github.com/mheh/EmailServerAPI.git", branch: "streaming"),
+            .package(url: "https://github.com/mheh/EmailServerAPI.git", branch: "master"),
             .package(url: "https://github.com/apple/swift-openapi-runtime", exact: "1.8.2"),
             .package(url: "https://github.com/swift-server/swift-openapi-vapor", exact: "1.0.1"),
     ],
