@@ -19,7 +19,7 @@ import Logging
         do {
             app.logger.logLevel = .trace
             let handler = Handler()
-            let transport = VaporTransport(routesBuilder: app.grouped("/"))
+            let transport = VaporTransport(routesBuilder: app)
             try handler.registerHandlers(on: transport)
             
             try await app.execute()

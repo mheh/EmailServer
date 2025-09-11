@@ -26,10 +26,10 @@ let package = Package(
             
             .package(url: "https://github.com/vapor/vapor.git", from: "4.115.0"),
             .package(url: "https://github.com/apple/swift-nio.git", from: "2.65.0"),
-            .package(url: "https://github.com/swift-server/swift-openapi-vapor", exact: "1.0.1"),
+            .package(url: "https://github.com/swift-server/swift-openapi-vapor", branch: "main"),
             
             .package(url: "https://github.com/hummingbird-project/hummingbird.git", from: "2.5.0"),
-            .package(url: "https://github.com/swift-server/swift-openapi-hummingbird.git", from: "2.0.1"),
+            .package(url: "https://github.com/swift-server/swift-openapi-hummingbird.git", branch: "main"),
     ],
     targets: [
         .executableTarget(
