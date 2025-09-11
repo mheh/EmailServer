@@ -117,6 +117,9 @@ extension SMTPStreamController {
         private static func handleStream(message: StreamInput, server: SMTPServer, continuation: StreamOutput.Continuation, logger: (Logger, Logger.Metadata)) async throws {
             switch message.input {
                 
+            case .StreamKeepAlive(let keepAlive):
+                print("keep alive \(keepAlive)")
+                
             case .SMTPLogin(let login):
                 do {
                     try await server.login(username: login.username, password: login.password)
