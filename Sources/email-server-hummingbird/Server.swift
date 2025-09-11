@@ -31,13 +31,14 @@ struct Handler: APIProtocol {
     }
 }
 
-@main struct BidirectionalEventStreamsServer {
+@main struct Entrypoint {
     static func main() async throws {
-        let router = Router()
-        let handler = Handler()
-        try handler.registerHandlers(on: router, serverURL: URL(string: "/")!)
         var appLogger: Logger = .init(label: "App")
         appLogger.logLevel = .trace
+        let router = Router()
+        let handler = Handler()
+        try handler.registerHandlers(on: router, serverURL: .defaultOpenAPIServerURL)
+        
         let app = Application(router: router, configuration: .init(), logger: appLogger)
         try await app.run()
     }
