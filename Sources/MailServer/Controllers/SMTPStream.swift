@@ -26,7 +26,7 @@ struct SMTPStreamController {
 extension SMTPStreamController {
     actor StreamStorage: Sendable {
         typealias StreamOutput = AsyncStream<String>
-//        typealias StreamInput = AsyncStream<Components.Schemas.SMTPServerStreamInput>
+        typealias StreamInput = EmailServerAPI.Components.Schemas.SMTPServerStreamInput
         
         /// The active streams for connected clients composed of `req.id` and the streaming task.
         private var streams: [String: Task<Void, any Error>] = [:]
@@ -57,8 +57,9 @@ extension SMTPStreamController {
             // setup the smtp server connection
             let host = input.query.smtpHost
             let port = input.query.smtpHostPort
+            let logMeta: Logger.Metadata = [ "id": "\(id)", "host": "\(host)", "port": "\(port)" ]
             
-            self.logger.debug("Creating a stream for \(id)")
+            self.logger.debug("Creating a SMTP Stream", metadata: logMeta)
             
             // make an outgoing stream
             let (stream, continuation) = StreamOutput.makeStream()
@@ -74,61 +75,69 @@ extension SMTPStreamController {
             
             // decode the incoming stream
             let inputMessages = switch input.body {
-            case .applicationJsonl(let body): body.asDecodedJSONLines(of: Components.Schemas.SMTPServerStreamInput.self)
+            case .applicationJsonl(let body): body.asDecodedJSONLines(of: StreamInput.self)
             }
             
             // form a task that handles the input from client and yields outgoing stream information
             let task = Task<Void, any Error> {
                 // connect to the server successfully
                 let server = SwiftMail.SMTPServer(host: host, port: port, numberOfThreads: 1)
-                self.logger.debug("Attempting SMTP connect for \(id) at \(host):\(port)")
-                do {
-                    try await server.connect()
-                } catch {
-                    continuation.finish()
-                }
+                self.logger.debug("Connecting...", metadata: logMeta)
+                do { try await server.connect() }
+                catch { continuation.finish() }
+                self.logger.debug("Connected", metadata: logMeta)
                     
                 // as long as http request is keep-alived, wait for inputs in the stream
                 for try await message in inputMessages {
                     try Task.checkCancellation()
-                    self.logger.debug("Received a message")
-                    
-                    switch message.input {
-                        
-                    case .SMTPLogin(let login):
-                        do {
-                            try await server.login(username: login.username, password: login.password)
-                        } catch { continuation.yield(error.localizedDescription) }
-                        
-                    case .SMTPLogout(_):
-                        do {
-                            try await server.disconnect()
-                            try await server.connect()
-                            continuation.yield("Logged out")
-                        } catch { continuation.yield(error.localizedDescription) }
-                        
-                    case .SimpleSMTPEmail(let email):
-                        do {
-                            try await server.sendEmail(.init(
-                                sender: .init(name: email.sender.name, address: email.sender.address),
-                                recipients: email.recepients.map { .init(name: $0.name, address: $0.address)},
-                                subject: email.subject,
-                                textBody: email.textBody
-                            ))
-                            continuation.yield("Sent!")
-                        } catch { continuation.yield(error.localizedDescription) }
-                            
-                    }
+                    self.logger.debug("Received input", metadata: logMeta)
+                    try await Self.handleStream(
+                        message: message, server: server,
+                        continuation: continuation, logger: (self.logger, logMeta))
                 }
                 
                 // close the stream, no more keep alive
-                try await server.disconnect()
+                self.logger.debug("Disconnecting...", metadata: logMeta)
+                do {
+                    try await server.disconnect()
+                    self.logger.debug("Disconnected", metadata: logMeta)
+                }
+                catch { self.logger.report(error: error, metadata: logMeta) }
                 continuation.finish()
             }
             
             // assign the stream to storage
             self.streams[id] = task
             return stream
+        }
+        
+        private static func handleStream(message: StreamInput, server: SMTPServer, continuation: StreamOutput.Continuation, logger: (Logger, Logger.Metadata)) async throws {
+            switch message.input {
+                
+            case .SMTPLogin(let login):
+                do {
+                    try await server.login(username: login.username, password: login.password)
+                } catch { continuation.yield(error.localizedDescription) }
+                
+            case .SMTPLogout(_):
+                do {
+                    try await server.disconnect()
+                    try await server.connect()
+                    continuation.yield("Logged out")
+                } catch { continuation.yield(error.localizedDescription) }
+                
+            case .SimpleSMTPEmail(let email):
+                do {
+                    try await server.sendEmail(.init(
+                        sender: .init(name: email.sender.name, address: email.sender.address),
+                        recipients: email.recepients.map { .init(name: $0.name, address: $0.address)},
+                        subject: email.subject,
+                        textBody: email.textBody
+                    ))
+                    continuation.yield("Sent!")
+                } catch { continuation.yield(error.localizedDescription) }
+                    
+            }
         }
     }
 }
