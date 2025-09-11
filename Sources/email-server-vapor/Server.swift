@@ -5,31 +5,10 @@
 //  Created by Milo Hehmsoth on 9/10/25.
 //
 
+import EmailServerAPI
 import Vapor
 import OpenAPIVapor
-import EmailServerAPI
-import NIOCore
-import NIOPosix
 import Logging
-
-struct Handler: APIProtocol {
-    private let storage: StreamStorage = .init()
-//    @Injected(\.request) var req: Request
-    
-    func smtpStream(_ input: EmailServerAPI.Operations.SmtpStream.Input) async throws -> EmailServerAPI.Operations.SmtpStream.Output {
-        let eventStream = await self.storage.makeStream(input: input)
-        
-        let responseBody = Operations.SmtpStream.Output.Ok.Body.applicationJsonl(
-            .init(eventStream.asEncodedJSONLines(), length: .unknown, iterationBehavior: .single)
-        )
-        
-        return .ok(.init(body: responseBody))
-    }
-    
-    func imapStream(_ input: Operations.ImapStream.Input) async throws -> Operations.ImapStream.Output {
-        return .internalServerError
-    }
-}
 
 @main struct Entrypoint {
     static func main() async throws {
@@ -40,7 +19,7 @@ struct Handler: APIProtocol {
         do {
             app.logger.logLevel = .trace
             let handler = Handler()
-            let transport = VaporTransport(routesBuilder: app.grouped(OpenAPIRequestInjectionMiddleware()))
+            let transport = VaporTransport(routesBuilder: app.grouped("/"))
             try handler.registerHandlers(on: transport)
             
             try await app.execute()
@@ -52,5 +31,3 @@ struct Handler: APIProtocol {
         try await app.asyncShutdown()
     }
 }
-
-
