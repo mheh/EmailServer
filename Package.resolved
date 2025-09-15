@@ -4,7 +4,7 @@
     {
       "identity" : "async-http-client",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/swift-server/async-http-client.git",
+      "location" : "https://github.com/swift-server/async-http-client",
       "state" : {
         "revision" : "7dc119c7edf3c23f52638faadb89182861dee853",
         "version" : "1.28.0"
@@ -34,7 +34,7 @@
       "location" : "https://github.com/mheh/EmailServerAPI.git",
       "state" : {
         "branch" : "master",
-        "revision" : "ba46ef39e48e0c26a8c65afa2f387df947821414"
+        "revision" : "7aa1225d285cd813034318f6e8f6175bb656ebb8"
       }
     },
     {
@@ -157,7 +157,7 @@
     {
       "identity" : "swift-http-types",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/apple/swift-http-types",
+      "location" : "https://github.com/apple/swift-http-types.git",
       "state" : {
         "revision" : "a0a57e949a8903563aba4615869310c0ebf14c03",
         "version" : "1.4.0"
