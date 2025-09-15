@@ -22,14 +22,10 @@ let package = Package(
     dependencies: [
             .package(url: "https://github.com/Cocoanetics/SwiftMail", revision: "1a5f874"),
             .package(url: "https://github.com/mheh/EmailServerAPI.git", branch: "master"),
-            .package(url: "https://github.com/apple/swift-openapi-runtime", exact: "1.8.2"),
             
             .package(url: "https://github.com/vapor/vapor.git", from: "4.115.0"),
             .package(url: "https://github.com/apple/swift-nio.git", from: "2.65.0"),
-            .package(url: "https://github.com/swift-server/swift-openapi-vapor", branch: "main"),
-            
             .package(url: "https://github.com/hummingbird-project/hummingbird.git", from: "2.5.0"),
-            .package(url: "https://github.com/swift-server/swift-openapi-hummingbird.git", branch: "main"),
     ],
     targets: [
         .executableTarget(
@@ -40,8 +36,6 @@ let package = Package(
                 .product(name: "Vapor", package: "vapor"),
                 .product(name: "NIOCore", package: "swift-nio"),
                 .product(name: "NIOPosix", package: "swift-nio"),
-                .product(name: "OpenAPIRuntime", package: "swift-openapi-runtime"),
-                .product(name: "OpenAPIVapor", package: "swift-openapi-vapor"),
             ]
         ),
         .executableTarget(
@@ -50,8 +44,6 @@ let package = Package(
                 .product(name: "SwiftMail", package: "SwiftMail"),
                 .product(name: "email-server-api", package: "EmailServerAPI"),
                 .product(name: "Hummingbird", package: "hummingbird"),
-                .product(name: "OpenAPIRuntime", package: "swift-openapi-runtime"),
-                .product(name: "OpenAPIHummingbird", package: "swift-openapi-hummingbird"),
             ]
         ),
         .testTarget(
