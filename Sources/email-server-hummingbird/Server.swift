@@ -14,7 +14,6 @@ import Logging
         var appLogger: Logger = .init(label: "App")
         appLogger.logLevel = .trace
         let router = Router()
-        let handler = Handler()
         
         let app = Application(router: router, configuration: .init(), logger: appLogger)
         try await app.run()
