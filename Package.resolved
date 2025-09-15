@@ -1,5 +1,5 @@
 {
-  "originHash" : "0357cc90b88da4eb92e3d6c24ba0d5a686fb3c2c47381253decf45f13920caf0",
+  "originHash" : "32bef836543334f7be8ba98db7dcbfabc6bc638847d2fa8deaa773be4761211e",
   "pins" : [
     {
       "identity" : "async-http-client",
@@ -34,7 +34,7 @@
       "location" : "https://github.com/mheh/EmailServerAPI.git",
       "state" : {
         "branch" : "master",
-        "revision" : "50b37313522d27398e64187d5da56a387b80e4e9"
+        "revision" : "ba46ef39e48e0c26a8c65afa2f387df947821414"
       }
     },
     {
@@ -56,15 +56,6 @@
       }
     },
     {
-      "identity" : "openapikit",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/mattpolzin/OpenAPIKit",
-      "state" : {
-        "revision" : "65d3bd28ad1f9497bfd4011fc2cac4acb49805b2",
-        "version" : "3.7.1"
-      }
-    },
-    {
       "identity" : "routing-kit",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/vapor/routing-kit.git",
@@ -80,15 +71,6 @@
       "state" : {
         "revision" : "87e50f483c54e6efd60e885f7f5aa946cee68023",
         "version" : "1.2.1"
-      }
-    },
-    {
-      "identity" : "swift-argument-parser",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/apple/swift-argument-parser",
-      "state" : {
-        "revision" : "309a47b2b1d9b5e991f36961c983ecec72275be3",
-        "version" : "1.6.1"
       }
     },
     {
@@ -263,42 +245,6 @@
       }
     },
     {
-      "identity" : "swift-openapi-generator",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/apple/swift-openapi-generator",
-      "state" : {
-        "revision" : "bb9a13596af11db9bb83389295d91cd335810fe8",
-        "version" : "1.10.2"
-      }
-    },
-    {
-      "identity" : "swift-openapi-hummingbird",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/swift-server/swift-openapi-hummingbird.git",
-      "state" : {
-        "branch" : "main",
-        "revision" : "c464db1afe2c886083fd60e38f281150ac7e73e5"
-      }
-    },
-    {
-      "identity" : "swift-openapi-runtime",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/apple/swift-openapi-runtime",
-      "state" : {
-        "revision" : "8f33cc5dfe81169fb167da73584b9c72c3e8bc23",
-        "version" : "1.8.2"
-      }
-    },
-    {
-      "identity" : "swift-openapi-vapor",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/swift-server/swift-openapi-vapor",
-      "state" : {
-        "branch" : "main",
-        "revision" : "4ee56d8b04375b8f32af666f31bfaaa5105cadc3"
-      }
-    },
-    {
       "identity" : "swift-se0270-range-set",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-se0270-range-set.git",
@@ -359,15 +305,6 @@
       "state" : {
         "revision" : "8666c92dbbb3c8eefc8008c9c8dcf50bfd302167",
         "version" : "2.16.1"
-      }
-    },
-    {
-      "identity" : "yams",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/jpsim/Yams",
-      "state" : {
-        "revision" : "d41ba4e7164c0838c6d48351f7575f7f762151fe",
-        "version" : "6.1.0"
       }
     }
   ],
