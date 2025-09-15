@@ -34,7 +34,7 @@
       "location" : "https://github.com/mheh/EmailServerAPI.git",
       "state" : {
         "branch" : "master",
-        "revision" : "7aa1225d285cd813034318f6e8f6175bb656ebb8"
+        "revision" : "6359314a0b5668b8bb8f1026826ec8f6a7cd666b"
       }
     },
     {
@@ -276,8 +276,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-system.git",
       "state" : {
-        "revision" : "890830fff1a577dc83134890c7984020c5f6b43b",
-        "version" : "1.6.2"
+        "revision" : "395a77f0aa927f0ff73941d7ac35f2b46d47c9db",
+        "version" : "1.6.3"
       }
     },
     {
