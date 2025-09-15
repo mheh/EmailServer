@@ -16,10 +16,11 @@ let storage = SMTPConnectionRepository()
         var env = try Environment.detect()
         try LoggingSystem.bootstrap(from: &env)        
         let app = try await Application.make(env)
+        app.http.server.configuration.port = 8081
 
         do {
             app.logger.logLevel = .trace
-            
+            try app.register(collection: WebsocketUpgradeHandler())
             try await app.execute()
         } catch {
             app.logger.report(error: error)

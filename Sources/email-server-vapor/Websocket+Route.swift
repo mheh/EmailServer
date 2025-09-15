@@ -10,18 +10,22 @@ import EmailServerAPI
 
 final class WebsocketUpgradeHandler: RouteCollection, Sendable {
     func boot(routes: any RoutesBuilder) throws {
-        routes.webSocket("smtp", onUpgrade: handleUpgrade)
+        let smtp = routes.grouped("smtp", ":smtpHost", ":smtpHostPort")
+        smtp.webSocket(onUpgrade: handleUpgrade(_:ws:))
     }
     
     func handleUpgrade(_ req: Request, ws: WebSocket) async {
+        req.logger.debug("Upgrading a request...")
         // get host, port from parameters
-        guard let host = req.parameters.get("host") else {
+        
+        let host = req.parameters.get("smtpHost")!
+        let portString = req.parameters.get("smtpHostPort")!
+        
+        guard let port = Int(portString) else {
+            req.logger.error("No port provided")
             return
         }
-        guard let portString = req.parameters.get("port"),
-              let port = Int(portString) else {
-            return
-        }
+        
         
         // add a new client to storage
         let client = await storage.new(
@@ -31,12 +35,14 @@ final class WebsocketUpgradeHandler: RouteCollection, Sendable {
         )
         
         ws.onBinary { ws, binary in
+            req.logger.debug("Received binary")
             await self.decode(client: client, binary: binary, logger: req.logger)
         }
         
         
         ws.onClose.whenComplete { result in
             Task {
+                req.logger.debug("Closing websocket connection")
                 // purge on close regardless of if succeeded or not
                 await storage.disconnect(client: client)
             }
