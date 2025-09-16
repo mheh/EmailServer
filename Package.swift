@@ -14,10 +14,6 @@ let package = Package(
             name: "email-server-vapor",
             targets: ["email-server-vapor"]
         ),
-        .executable(
-            name: "email-server-hummingbird",
-            targets: ["email-server-hummingbird"]
-        )
     ],
     dependencies: [
             .package(url: "https://github.com/Cocoanetics/SwiftMail", revision: "1a5f874"),
@@ -25,7 +21,6 @@ let package = Package(
             
             .package(url: "https://github.com/vapor/vapor.git", from: "4.115.0"),
             .package(url: "https://github.com/apple/swift-nio.git", from: "2.65.0"),
-            .package(url: "https://github.com/hummingbird-project/hummingbird.git", from: "2.5.0"),
     ],
     targets: [
         .executableTarget(
@@ -36,14 +31,6 @@ let package = Package(
                 .product(name: "Vapor", package: "vapor"),
                 .product(name: "NIOCore", package: "swift-nio"),
                 .product(name: "NIOPosix", package: "swift-nio"),
-            ]
-        ),
-        .executableTarget(
-            name: "email-server-hummingbird",
-            dependencies: [
-                .product(name: "SwiftMail", package: "SwiftMail"),
-                .product(name: "email-server-api", package: "EmailServerAPI"),
-                .product(name: "Hummingbird", package: "hummingbird"),
             ]
         ),
         .testTarget(
