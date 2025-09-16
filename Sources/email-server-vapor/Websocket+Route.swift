@@ -26,7 +26,6 @@ final class WebsocketUpgradeHandler: RouteCollection, Sendable {
             return
         }
         
-        
         // add a new client to storage
         let client = await storage.new(
             request: req,
@@ -34,16 +33,30 @@ final class WebsocketUpgradeHandler: RouteCollection, Sendable {
             smtp: .init(id: UUID(), host: host, port: port)
         )
         
+        do {
+            try await client.smtp.connect()
+        } catch {
+            req.logger.report(error: error)
+            await storage.disconnect(client: client)
+            return // exit because we couldn't connect
+        }
+        
+        // decode incoming binary objects
         ws.onBinary { ws, binary in
             req.logger.debug("Received binary")
             await self.decode(client: client, binary: binary, logger: req.logger)
         }
         
-        
+        // when closed remove the connection from local storage
         ws.onClose.whenComplete { result in
             Task {
                 req.logger.debug("Closing websocket connection")
                 // purge on close regardless of if succeeded or not
+                do {
+                    try await client.smtp.disconnect()
+                } catch {
+                    req.logger.report(error: error)
+                }
                 await storage.disconnect(client: client)
             }
         }
@@ -61,14 +74,8 @@ extension WebsocketUpgradeHandler {
                 let state = await client.smtp.state()
                 let data = try WebsocketResponses.state(state).encode()
                 client.websocket.send(data)
-            case .connect(_):
-                try await client.smtp.connect()
-            case .connectNewHost(let request):
-                try await client.smtp.reconnect(newHost: request.host, newPort: request.port)
             case .login(let request):
                 try await client.smtp.login(username: request.username, password: request.password)
-            case .disconnect(_):
-                try await client.smtp.disconnect()
             case .send(let request):
                 try await client.smtp.send(.init(
                     sender: .init(name: request.sender.name, address: request.sender.address),
