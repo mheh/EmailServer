@@ -1,27 +1,3 @@
 # EmailServer
 
-The goals of this project are to abstract SMTP and IMAP (experimental) session management through preshared apikeys so that another server can use 
-
-## Getting Started
-
-To build the project using the Swift Package Manager, run the following command in the terminal from the root of the project:
-```bash
-swift build
-```
-
-To run the project and start the server, use the following command:
-```bash
-swift run
-```
-
-To execute tests, use the following command:
-```bash
-swift test
-```
-
-### See more
-
-- [Vapor Website](https://vapor.codes)
-- [Vapor Documentation](https://docs.vapor.codes)
-- [Vapor GitHub](https://github.com/vapor)
-- [Vapor Community](https://github.com/vapor-community)
+The goal of this server is to manage SMTP and in the future IMAP connections through Websocket sessions. Connect on a socket to an SMTP server, login with credentials, send emails over the socket instance and disconnect from the socket. This server manages the SMTP server connection state: connects and disconnects as gracefully as it can.  
