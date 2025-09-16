@@ -19,7 +19,7 @@ actor SMTPConnectionRepository {
     }
     
     public func new(request: Request, websocket: WebSocket, smtp: SMTPConnection) async -> ConnectedClient {
-        let id = await smtp.id
+        let id = smtp.id
         let newConnectedClient = await ConnectedClient(request: request, websocket: websocket, smtp: smtp)
         self.storage[id] = newConnectedClient
         return newConnectedClient
@@ -49,7 +49,7 @@ extension SMTPConnectionRepository {
             self.request = request
             self.websocket = websocket
             self.smtp = smtp
-            self.id = await smtp.id
+            self.id = smtp.id
         }
         
         func hash(into hasher: inout Hasher) {

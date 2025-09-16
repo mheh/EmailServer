@@ -67,12 +67,12 @@ extension WebsocketUpgradeHandler {
     func decode(client: SMTPConnectionRepository.ConnectedClient, binary: ByteBuffer, logger: Logger) async {
         do {
             let data = Data.init(buffer: binary)
-            let decoded = try WebsocketCommands.decode(data: data)
+            let decoded = try SMTPConnectionCommand.decode(data: data)
             
             switch decoded {
             case .connectionState(_):
                 let state = await client.smtp.state()
-                let data = try WebsocketResponses.state(state).encode()
+                let data = try SMTPConnectionResponse.state(state).encode()
                 client.websocket.send(data)
             case .login(let request):
                 try await client.smtp.login(username: request.username, password: request.password)

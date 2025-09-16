@@ -46,7 +46,7 @@ public actor SMTPConnection {
         self.logger = logger
     }
     
-    public func state() -> WebsocketResponses.ConnectionState {
+    public func state() -> SMTPConnectionResponse.ConnectionState {
         return .init(
             id: self.id,
             host: self.host,
