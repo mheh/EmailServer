@@ -20,7 +20,13 @@ let storage = SMTPConnectionRepository()
 
         do {
             app.logger.logLevel = .trace
-            try app.register(collection: WebsocketUpgradeHandler())
+            
+            app.smtp = .init()
+            await app.smtp.startCleanupTask()
+            
+            app.smtpEmails = .init()
+            await app.smtpEmails.startProcessTask(smtpConnectionRepository: app.smtp)
+            
             try await app.execute()
         } catch {
             app.logger.report(error: error)
