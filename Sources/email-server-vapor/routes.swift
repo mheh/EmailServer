@@ -46,5 +46,9 @@ struct Handler: APIProtocol, @unchecked Sendable {
         return .ok
     }
     
+    func ok(_ input: Operations.Ok.Input) async throws -> Operations.Ok.Output {
+        return .ok
+    }
+    
     @Injected(\.request) var req
 }
