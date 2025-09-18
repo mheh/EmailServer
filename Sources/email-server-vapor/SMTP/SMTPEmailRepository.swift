@@ -12,6 +12,8 @@ import EmailServerAPI
 actor SMTPEmailRepository {
     /// Until getting around to using Vapor Queues, a stored array of emails to send
     private var queuedEmails: [QueuedEmail]
+    /// When performing grouping with connection IDs, this is a batch of emails
+    typealias Batch = [UUID: [QueuedEmail]]
     
     private var processingTask: Task<Void, any Error>?
     
@@ -36,13 +38,15 @@ actor SMTPEmailRepository {
         self.processingTask = Task {
             try await withThrowingTaskGroup(of: Void.self) { group in
                 
-                /// Every thirty seconds check if our task is cancelled or not
+                /// Every `SMTP_EMAIL_BATCH_CLEAN` seconds check if our task is cancelled or not
                 /// Create child tasks to send emails based on groups of connection IDs to send on.
                 while !Task.isCancelled {
-                    try await Task.sleep(for: .seconds(Constants.Time.THIRTY_SECONDS))
-                    
+                    try await Task.sleep(for: .seconds(Constants.Time.SMTP_EMAIL_BATCH_CLEAN))
                     // get our entire queue
                     let entireQueue = self.processEntireQueue()
+                    if entireQueue.count > 0 {
+                        Self.batchMetadata(entireQueue, logger: self.logger)
+                    }
                     
                     // for batch of emails on a connection id
                     for batch in entireQueue {
@@ -53,14 +57,7 @@ actor SMTPEmailRepository {
                                 return
                             }
                             for email in batch.value {
-                                do {
-                                    try await connection.server.sendEmail(email.email.swiftMailEmail)
-                                } catch {
-                                    var loggerMetadata = await connection.connectionDetails.metadata()
-                                    loggerMetadata["error"] = "\(error)"
-                                    loggerMetadata["error_description"] = "\(error.localizedDescription)"
-                                    await self.logger.error("Error encountered sending email: \(error)", metadata: loggerMetadata)
-                                }
+                                await connection.send(email: email.email.swiftMailEmail)
                             }
                         }
                     }
@@ -72,21 +69,30 @@ actor SMTPEmailRepository {
     }
     
     /// Split all queued emails into groups of connection ID
-    private func processEntireQueue() -> [UUID: [QueuedEmail]] {
+    private func processEntireQueue() -> Batch {
         // dequeue based on connection id
-        let connectionIdGroups = self.queuedEmails
+        let connectionIdGroups: Batch = self.queuedEmails
             .grouped(by: {$0.connectionId})
         self.queuedEmails.removeAll()
         return connectionIdGroups
     }
     
-    
+    static func batchMetadata(_ batch: Batch, logger: Logger) {
+        var batchMetadata: Logger.Metadata = [:]
+        for (id, queuedEmails) in batch {
+            batchMetadata["\(id)"] = "count: \(queuedEmails.count)"
+        }
+        
+        logger.debug("Processing batch", metadata: batchMetadata)
+    }
+}
+
+extension SMTPEmailRepository {
     struct QueuedEmail: Codable {
         /// The active connection ID to use from storage
         let connectionId: UUID
         /// The stored email to be sent on the connection ID
         let email: QueuedEmailType
-        
         
         
         /// A type of codable email that can be stored and decoded
