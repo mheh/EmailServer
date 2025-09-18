@@ -28,6 +28,9 @@ import Logging
             app.smtpEmails = .init()
             await app.smtpEmails.startProcessTask(smtpConnectionRepository: app.smtp)
             
+            // register routes
+            try routes(app)
+            
             try await app.execute()
         } catch {
             app.logger.report(error: error)
