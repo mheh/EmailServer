@@ -17,11 +17,14 @@ import Logging
         app.http.server.configuration.port = 8081
 
         do {
-            app.logger.logLevel = .trace
+            // Inject req
+            app.middleware.use(OpenAPIRequestInjectionMiddleware())
             
+            // setup connection storage
             app.smtp = .init()
             await app.smtp.startCleanupTask()
             
+            // setup email storage
             app.smtpEmails = .init()
             await app.smtpEmails.startProcessTask(smtpConnectionRepository: app.smtp)
             

@@ -6,10 +6,20 @@
 //
 
 import Vapor
+import OpenAPIVapor
 import EmailServerAPI
 
 public func routes(_ app: Application) throws {
-    
+    // Create a Vapor OpenAPI Transport using your application.
+    let transport = VaporTransport(routesBuilder: app)
+
+    // Create an instance of your handler type that conforms the generated protocol
+    // defining your service API.
+    let handler = Handler()
+
+    // Call the generated function on your implementation to add its request
+    // handlers to the app.
+    try handler.registerHandlers(on: transport, middlewares: [])
 }
 
 struct Handler: APIProtocol, @unchecked Sendable {
