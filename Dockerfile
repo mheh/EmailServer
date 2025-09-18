@@ -29,11 +29,11 @@ RUN mkdir /staging
 # N.B.: The static version of jemalloc is incompatible with the static Swift runtime.
 RUN --mount=type=cache,target=/build/.build \
     swift build -c release \
-        --product MailServer \
+        --product email-server-vapor \
         --static-swift-stdlib \
         -Xlinker -ljemalloc && \
     # Copy main executable to staging area
-    cp "$(swift build -c release --show-bin-path)/MailServer" /staging && \
+    cp "$(swift build -c release --show-bin-path)/email-server-vapor" /staging && \
     # Copy resources bundled by SPM to staging area
     find -L "$(swift build -c release --show-bin-path)" -regex '.*\.resources$' -exec cp -Ra {} /staging \;
 
@@ -83,9 +83,9 @@ ENV SWIFT_BACKTRACE=enable=yes,sanitize=yes,threads=all,images=all,interactive=n
 # Ensure all further commands run as the vapor user
 USER vapor:vapor
 
-# Let Docker bind to port 8080
-EXPOSE 8080
+# Let Docker bind to port 8081
+EXPOSE 8081
 
 # Start the Vapor service when the image is run, default to listening on 8080 in production environment
-ENTRYPOINT ["./MailServer"]
-CMD ["serve", "--env", "production", "--hostname", "0.0.0.0", "--port", "8080"]
+ENTRYPOINT ["./email-server-vapor"]
+CMD ["serve", "--env", "production", "--hostname", "0.0.0.0", "--port", "8081"]
