@@ -1,5 +1,5 @@
 {
-  "originHash" : "a159ca759a470444fa69200eddeae4ddb914abb8984258c1472e5c533072a93b",
+  "originHash" : "0bcb0ff64672789f2b44175dad4c3567f9fa6287c6e23f0784ed0446716e966a",
   "pins" : [
     {
       "identity" : "async-http-client",
@@ -33,8 +33,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/mheh/EmailServerAPI.git",
       "state" : {
-        "branch" : "back-to-yaml",
-        "revision" : "9e61f05885e571195ca4d12f524ef979ff56f04c"
+        "branch" : "master",
+        "revision" : "32605d1a646c4721e9a6c90b62c9ce9cb706e464"
       }
     },
     {
@@ -44,15 +44,6 @@
       "state" : {
         "revision" : "3498e60218e6003894ff95192d756e238c01f44e",
         "version" : "4.7.1"
-      }
-    },
-    {
-      "identity" : "openapikit",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/mattpolzin/OpenAPIKit",
-      "state" : {
-        "revision" : "65d3bd28ad1f9497bfd4011fc2cac4acb49805b2",
-        "version" : "3.7.1"
       }
     },
     {
@@ -71,15 +62,6 @@
       "state" : {
         "revision" : "87e50f483c54e6efd60e885f7f5aa946cee68023",
         "version" : "1.2.1"
-      }
-    },
-    {
-      "identity" : "swift-argument-parser",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/apple/swift-argument-parser",
-      "state" : {
-        "revision" : "309a47b2b1d9b5e991f36961c983ecec72275be3",
-        "version" : "1.6.1"
       }
     },
     {
@@ -254,15 +236,6 @@
       }
     },
     {
-      "identity" : "swift-openapi-generator",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/apple/swift-openapi-generator",
-      "state" : {
-        "revision" : "d74223cc5595a8165181c4d9579243c932e5cd07",
-        "version" : "1.10.3"
-      }
-    },
-    {
       "identity" : "swift-openapi-runtime",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-openapi-runtime",
@@ -341,15 +314,6 @@
       "state" : {
         "revision" : "8666c92dbbb3c8eefc8008c9c8dcf50bfd302167",
         "version" : "2.16.1"
-      }
-    },
-    {
-      "identity" : "yams",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/jpsim/Yams",
-      "state" : {
-        "revision" : "d41ba4e7164c0838c6d48351f7575f7f762151fe",
-        "version" : "6.1.0"
       }
     }
   ],
