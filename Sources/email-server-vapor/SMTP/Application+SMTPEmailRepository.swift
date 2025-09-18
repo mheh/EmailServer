@@ -24,3 +24,11 @@ extension Application {
         typealias Value = SMTPEmailRepository
     }
 }
+
+extension Request {
+    var smtpEmails: SMTPEmailRepository {
+        get {
+            return self.application.smtpEmails
+        }
+    }
+}

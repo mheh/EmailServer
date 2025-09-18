@@ -28,6 +28,10 @@ actor SMTPEmailRepository {
         self.processingTask = nil
     }
     
+    public func add(emails: [QueuedEmail]) {
+        self.queuedEmails.append(contentsOf: emails)
+    }
+    
     func startProcessTask(smtpConnectionRepository: SMTPConnectionRepository) {
         self.processingTask = Task {
             try await withThrowingTaskGroup(of: Void.self) { group in
@@ -50,18 +54,7 @@ actor SMTPEmailRepository {
                             }
                             for email in batch.value {
                                 do {
-                                    switch email.email {
-                                    case .simpleSmtpEmail(let simpleSmtp):
-                                        try await connection.server.sendEmail(.init(
-                                            sender: .init(name: simpleSmtp.sender.name, address: simpleSmtp.sender.address),
-                                            recipients: simpleSmtp.recepients.map { .init(name: $0.name, address: $0.address)},
-                                            ccRecipients: simpleSmtp.ccRecepients.map { .init(name: $0.name, address: $0.address)},
-                                            bccRecipients: simpleSmtp.bccRecepients.map { .init(name: $0.name, address: $0.address)},
-                                            subject: simpleSmtp.subject,
-                                            textBody: simpleSmtp.textBody,
-                                            htmlBody: simpleSmtp.htmlBody,
-                                            attachments: []))
-                                    }
+                                    try await connection.server.sendEmail(email.email.swiftMailEmail)
                                 } catch {
                                     var loggerMetadata = await connection.connectionDetails.metadata()
                                     loggerMetadata["error"] = "\(error)"
@@ -99,6 +92,20 @@ actor SMTPEmailRepository {
         /// A type of codable email that can be stored and decoded
         enum QueuedEmailType: Codable {
             case simpleSmtpEmail(EmailServerAPI.Components.Schemas.SimpleSMTPEmail)
+            
+            var swiftMailEmail: SwiftMail.Email {
+                switch self {
+                case .simpleSmtpEmail(let email): return .init(
+                    sender: .init(name: email.sender.name, address: email.sender.address),
+                    recipients: email.recepients.map { .init(name: $0.name, address: $0.address)},
+                    ccRecipients: email.ccRecepients.map { .init(name: $0.name, address: $0.address)},
+                    bccRecipients: email.bccRecepients.map { .init(name: $0.name, address: $0.address)},
+                    subject: email.subject,
+                    textBody: email.textBody,
+                    htmlBody: email.htmlBody,
+                    attachments: [])
+                }
+            }
         }
     }
 }

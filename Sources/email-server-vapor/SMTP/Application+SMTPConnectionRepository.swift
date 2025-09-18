@@ -25,3 +25,11 @@ extension Application {
         typealias Value = SMTPConnectionRepository
     }
 }
+
+extension Request {
+    var smtp: SMTPConnectionRepository {
+        get {
+            return self.application.smtp
+        }
+    }
+}

@@ -9,8 +9,6 @@ import EmailServerAPI
 import Vapor
 import Logging
 
-let storage = SMTPConnectionRepository()
-
 @main struct Entrypoint {
     static func main() async throws {
         var env = try Environment.detect()
